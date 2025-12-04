@@ -1,0 +1,150 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1:3306
+-- Tempo de geração: 04/12/2025 às 23:15
+-- Versão do servidor: 8.0.41
+-- Versão do PHP: 8.3.14
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Banco de dados: `nomade`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `bookings`
+--
+
+DROP TABLE IF EXISTS `bookings`;
+CREATE TABLE IF NOT EXISTS `bookings` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `property_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `check_in` date NOT NULL,
+  `check_out` date NOT NULL,
+  `status` enum('pendente','pago','concluido','cancelado') COLLATE utf8mb4_unicode_ci DEFAULT 'pendente',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `property_id` (`property_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Despejando dados para a tabela `bookings`
+--
+
+INSERT INTO `bookings` (`id`, `property_id`, `user_id`, `check_in`, `check_out`, `status`, `created_at`) VALUES
+(2, 4, 3, '2025-12-01', '2025-12-05', 'pago', '2025-11-30 21:57:25'),
+(3, 5, 3, '2025-11-26', '2025-12-03', 'cancelado', '2025-11-30 22:21:08'),
+(4, 6, 3, '2025-12-05', '2025-12-08', 'cancelado', '2025-11-30 23:07:05'),
+(5, 8, 3, '2025-12-05', '2025-12-08', 'cancelado', '2025-11-30 23:10:37'),
+(6, 5, 2, '2025-12-05', '2025-12-07', 'cancelado', '2025-12-01 22:30:28'),
+(7, 5, 2, '2025-12-05', '2025-12-08', 'cancelado', '2025-12-03 20:10:56'),
+(8, 19, 2, '2025-12-24', '2026-01-02', 'pendente', '2025-12-03 20:16:47'),
+(10, 4, 3, '2026-01-14', '2026-01-16', 'pendente', '2025-12-03 20:35:04'),
+(11, 4, 3, '2025-12-15', '2025-12-19', 'pago', '2025-12-03 20:35:27'),
+(12, 6, 3, '2025-12-31', '2026-01-02', 'pago', '2025-12-03 22:43:39');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `properties`
+--
+
+DROP TABLE IF EXISTS `properties`;
+CREATE TABLE IF NOT EXISTS `properties` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `owner_id` int NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `city` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `rooms` int NOT NULL,
+  `guests` int NOT NULL,
+  `img` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `owner_id` (`owner_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Despejando dados para a tabela `properties`
+--
+
+INSERT INTO `properties` (`id`, `owner_id`, `title`, `city`, `type`, `price`, `rooms`, `guests`, `img`) VALUES
+(4, 2, 'Apartamento Rio de Janeiro', 'Rio de Janeiro', 'Apartamento', 350.00, 2, 4, 'assets/apto1.png'),
+(5, 2, 'Hotel São Paulo', 'São Paulo', 'Hotel', 450.00, 1, 2, 'assets/hotel1.png'),
+(6, 2, 'Resort Recife', 'Recife', 'Resort', 850.00, 1, 3, 'assets/resort1.png'),
+(7, 2, 'Casa Salvador', 'Salvador', 'Casa', 600.00, 3, 8, 'assets/casa1.png'),
+(8, 2, 'Apartamento Gramado', 'Gramado', 'Apartamento', 420.00, 2, 5, 'assets/apto1.png'),
+(9, 2, 'Hotel Rio de Janeiro', 'Rio de Janeiro', 'Hotel', 550.00, 1, 2, 'assets/hotel1.png'),
+(10, 2, 'Casa São Paulo', 'São Paulo', 'Casa', 1200.00, 4, 10, 'assets/casa1.png'),
+(11, 2, 'Resort Salvador', 'Salvador', 'Resort', 1100.00, 2, 4, 'assets/resort1.png'),
+(12, 2, 'Apartamento Recife', 'Recife', 'Apartamento', 280.00, 1, 2, 'assets/apto1.png'),
+(13, 2, 'Hotel Gramado', 'Gramado', 'Hotel', 680.00, 1, 2, 'assets/hotel1.png'),
+(19, 2, 'Resort São Paulo', 'São Paulo', 'Resort', 750.00, 1, 2, 'assets/uploads/prop_69309a9851dde.png'),
+(21, 6, 'Casa de Praia', 'Rio de Janeiro', 'Casa', 500.00, 2, 2, 'assets/uploads/prop_6930bca18a520.png');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura para tabela `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cpf` varchar(14) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('locatario','proprietario','administrador') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Despejando dados para a tabela `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `password`, `cpf`, `address`, `type`, `created_at`) VALUES
+(2, 'Admin', 'admin@nomade.com', '$2y$10$11H42unkNquqr9WyXwAQ1uj81XABVN5.ZYDco8EbCif5N88Xl176q', '12345678910', 'Av. São Paulo, 123', 'administrador', '2025-11-30 20:07:33'),
+(3, 'Ruan', 'ruan@nomade.com', '$2y$10$Pm21I8k1SzbrW3Q1YzFTf.3jwMJhuoyYTwFi5Om8tRTpjOKodREJi', '12345678910', 'Av. São Paulo, 123', 'locatario', '2025-11-30 20:24:50'),
+(4, 'Lucas', 'lucas@nomade.com', '$2y$10$nofMj.UOFb/O0kiut73dueimbFMUpJ7dDMne0/QdeUyhdnqIVW56a', '12345678910', 'Av. São Paulo, 123', 'proprietario', '2025-11-30 20:25:28'),
+(5, 'Lucas M', 'Lucas@gmail.com', '$2y$10$K/coj/HV6Q2DJy9gBltUW.XqtCK2JH7y3V0MBHDFSeKsLuf92ysHW', '44455566678', 'Rua de Catanduva', 'locatario', '2025-12-03 22:39:19'),
+(6, 'Ruan A', 'ruan@gmail.com', '$2y$10$GX4MGJMS68KwwRb0RcKW5uwuIGfaSEVulOAd/8r0DmXzz1pyiVNTG', '44477788852', 'Rua de Catanduva', 'proprietario', '2025-12-03 22:40:04');
+
+--
+-- Restrições para tabelas despejadas
+--
+
+--
+-- Restrições para tabelas `bookings`
+--
+ALTER TABLE `bookings`
+  ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Restrições para tabelas `properties`
+--
+ALTER TABLE `properties`
+  ADD CONSTRAINT `properties_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
